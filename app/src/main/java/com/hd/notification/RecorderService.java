@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.hd.notification.util.NotificationUtils;
+import com.hd.notification.bean.NotifyRecorderItem;
+import com.hd.notification.broadcast.NotificationUtils;
 
 
 /**
@@ -18,7 +20,8 @@ import com.hd.notification.util.NotificationUtils;
  */
 public class RecorderService extends Service {
 
-    private boolean playing = false;
+    @NonNull
+    private NotifyRecorderItem mNotifyRecorderItem = new NotifyRecorderItem();
 
     @Override
     public void onCreate() {
@@ -44,12 +47,12 @@ public class RecorderService extends Service {
         return new PlayBinder();
     }
 
-    public void setPlaying(boolean playing) {
-        this.playing = playing;
+    public void setItem(@NonNull NotifyRecorderItem item) {
+        this.mNotifyRecorderItem = item;
     }
 
-    public boolean isPlaying() {
-        return playing;
+    public boolean isRecording() {
+        return mNotifyRecorderItem.isRecording();
     }
 
 

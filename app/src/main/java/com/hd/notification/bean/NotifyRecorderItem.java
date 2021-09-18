@@ -23,11 +23,12 @@ public class NotifyRecorderItem implements Serializable {
 
     private final String hashCode = System.currentTimeMillis() + "";
 
+    @EnRecordStatus
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(@EnRecordStatus int status) {
         this.status = status;
     }
 
@@ -37,6 +38,10 @@ public class NotifyRecorderItem implements Serializable {
 
     public void setCurrentMs(long currentMs) {
         this.currentMs = currentMs;
+    }
+
+    public boolean isRecording() {
+        return status == EnRecordStatus.RECORDING;
     }
 
     /**
@@ -56,5 +61,6 @@ public class NotifyRecorderItem implements Serializable {
     public int hashCode() {
         return hashCode.hashCode();
     }
+
 
 }

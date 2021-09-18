@@ -1,4 +1,4 @@
-package com.hd.notification.util;
+package com.hd.notification.ui;
 
 
 /**
@@ -6,7 +6,7 @@ package com.hd.notification.util;
  * @Author: liaoyuhuan
  * @CreateDate: 2021/9/18
  */
-public class MusicPlayAction {
+public class NotifyAction {
     /**
      * 录制，暂停，继续
      */
@@ -27,22 +27,4 @@ public class MusicPlayAction {
      * 退出
      */
     public static final String TYPE_EXIT = "TYPE_EXIT";
-
-    /**
-     * 默认状态
-     */
-    public static final int STATE_IDLE = 100;
-    /**
-     * 正在准备中
-     */
-    public static final int STATE_PREPARING = 101;
-    /**
-     * 正在播放中
-     */
-    public static final int STATE_PLAYING = 102;
-    /**
-     * 暂停状态
-     */
-    public static final int STATE_PAUSE = 103;
-
 }

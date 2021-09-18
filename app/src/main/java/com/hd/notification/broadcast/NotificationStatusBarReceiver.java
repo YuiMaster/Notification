@@ -1,4 +1,4 @@
-package com.hd.notification.util;
+package com.hd.notification.broadcast;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -7,7 +7,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
+
 import com.hd.notification.BaseAppHelper;
+import com.hd.notification.util.LOG;
+import com.hd.notification.ui.NotifyAction;
 
 
 /**
@@ -21,8 +26,19 @@ public class NotificationStatusBarReceiver extends BroadcastReceiver {
     public static final String ACTION_STATUS_BAR = "com.hd.notification.status_bar";
     public static final String EXTRA = "extra";
 
+    @NonNull
+    public MutableLiveData<String> liveExtra = new MutableLiveData<>();
+
+    /**
+     * 避免重复注册
+     */
     private boolean isRegister = false;
 
+    /**
+     * 注册
+     *
+     * @param activity 活动
+     */
     public void register(Activity activity) {
         if (isRegister) {
             return;
@@ -33,6 +49,11 @@ public class NotificationStatusBarReceiver extends BroadcastReceiver {
         activity.registerReceiver(this, intentFilter);
     }
 
+    /**
+     * 取消
+     *
+     * @param activity 活动
+     */
     public void unregister(Activity activity) {
         if (isRegister) {
             isRegister = false;
@@ -40,6 +61,23 @@ public class NotificationStatusBarReceiver extends BroadcastReceiver {
         }
     }
 
+    /**
+     * notification有部分 Activity接收
+     *
+     * @param intent
+     */
+    public void onNewIntent(Intent intent) {
+        if (intent != null && intent.getAction().equals(ACTION_STATUS_BAR)) {
+            String action = intent.getStringExtra(NotificationStatusBarReceiver.EXTRA);
+            LOG.d(TAG, "onNewIntent extra: " + action);
+            liveExtra.postValue(action);
+        }
+    }
+
+
+    /**
+     * 接收
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent == null || TextUtils.isEmpty(intent.getAction())) {
@@ -47,23 +85,24 @@ public class NotificationStatusBarReceiver extends BroadcastReceiver {
         }
 
         final String extra = intent.getStringExtra(EXTRA);
-        if (TextUtils.equals(extra, MusicPlayAction.TYPE_APP)) {
+        liveExtra.postValue(extra);
+        if (TextUtils.equals(extra, NotifyAction.TYPE_APP)) {
             LOG.d(TAG, "onReceive  TYPE_APP");
-        } else if (TextUtils.equals(extra, MusicPlayAction.TYPE_RECORD)) {
+        } else if (TextUtils.equals(extra, NotifyAction.TYPE_RECORD)) {
             LOG.d(TAG, "onReceive  TYPE_RECORD");
             if (BaseAppHelper.get().getPlayService() != null) {
-                boolean playing = BaseAppHelper.get().getPlayService().isPlaying();
+                boolean playing = BaseAppHelper.get().getPlayService().isRecording();
                 if (playing) {
                     LOG.d(TAG, "onReceive  暂停");
                 } else {
                     LOG.d(TAG, "onReceive  播放");
                 }
             }
-        } else if (TextUtils.equals(extra, MusicPlayAction.TYPE_ADD_TAG)) {
+        } else if (TextUtils.equals(extra, NotifyAction.TYPE_ADD_TAG)) {
             LOG.d(TAG, "onReceive  TYPE_ADD_TAG");
-        } else if (TextUtils.equals(extra, MusicPlayAction.TYPE_EXIT)) {
+        } else if (TextUtils.equals(extra, NotifyAction.TYPE_EXIT)) {
             LOG.d(TAG, "onReceive  TYPE_EXIT");
-        } else if (TextUtils.equals(extra, MusicPlayAction.TYPE_SAVE)) {
+        } else if (TextUtils.equals(extra, NotifyAction.TYPE_SAVE)) {
             LOG.d(TAG, "onReceive  TYPE_SAVE");
         }
     }

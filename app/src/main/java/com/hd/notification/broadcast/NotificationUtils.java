@@ -1,4 +1,4 @@
-package com.hd.notification.util;
+package com.hd.notification.broadcast;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -16,11 +16,16 @@ import androidx.core.app.NotificationCompat;
 
 import com.hd.notification.R;
 import com.hd.notification.RecorderService;
+import com.hd.notification.bean.EnRecordStatus;
 import com.hd.notification.bean.NotifyRecorderItem;
 import com.hd.notification.ui.RecorderAndTranslatingActivity;
+import com.hd.notification.util.Constant;
+import com.hd.notification.util.FormatUtil;
+import com.hd.notification.util.LOG;
+import com.hd.notification.ui.NotifyAction;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
-import static com.hd.notification.util.MusicPlayAction.TYPE_APP;
+import static com.hd.notification.ui.NotifyAction.TYPE_APP;
 
 
 public class NotificationUtils {
@@ -56,24 +61,23 @@ public class NotificationUtils {
         notificationManager = (NotificationManager) recorderService.getSystemService(NOTIFICATION_SERVICE);
     }
 
-    public void setClazz(Class<?> clazz) {
+    public void setClazz(@NonNull Class<?> clazz) {
         this.clazz = clazz;
     }
 
     /**
-     * 开始播放
+     * 开始录音
      *
-     * @param music music
+     * @param item 数据
      */
-    public void showPlay(NotifyRecorderItem music) {
+    public void showStart(@NonNull NotifyRecorderItem item) {
         LOG.d(TAG, "showPlay");
-        if (music == null) {
+        if (item == null) {
             return;
         }
-
-        //这个方法是启动Notification到前台
+        // 这个方法是启动Notification到前台
         if (recorderService != null) {
-            recorderService.startForeground(NOTIFICATION_ID, buildNotification(recorderService, music, true, clazz));
+            recorderService.startForeground(NOTIFICATION_ID, buildNotification(recorderService, item, clazz));
         }
     }
 
@@ -81,18 +85,18 @@ public class NotificationUtils {
     /**
      * 暂停
      *
-     * @param music music
+     * @param item 数据
      */
-    public void showPause(NotifyRecorderItem music) {
+    public void showPause(@NonNull NotifyRecorderItem item) {
         LOG.d(TAG, "showPause");
-        if (music == null) {
+        if (item == null) {
             return;
         }
 
         //这个方法是停止Notification
         if (recorderService != null) {
             recorderService.stopForeground(false);
-            notificationManager.notify(NOTIFICATION_ID, buildNotification(recorderService, music, false, clazz));
+            notificationManager.notify(NOTIFICATION_ID, buildNotification(recorderService, item, clazz));
         }
     }
 
@@ -107,7 +111,7 @@ public class NotificationUtils {
         notificationManager.cancelAll();
     }
 
-    private Notification buildNotification(Context context, NotifyRecorderItem item, boolean isPlaying, Class<?> clazz) {
+    private Notification buildNotification(Context context, NotifyRecorderItem item, Class<?> clazz) {
         LOG.d(TAG, "buildNotification");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -122,9 +126,9 @@ public class NotificationUtils {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (mRemoteViews == null) {
-            mRemoteViews = getCustomViews(context, item, isPlaying);
+            mRemoteViews = getCustomViews(context, item);
         } else {
-            updateRemoteView(context, mRemoteViews, item, isPlaying);
+            updateRemoteView(context, mRemoteViews, item);
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
@@ -178,35 +182,34 @@ public class NotificationUtils {
      * @param item
      * @return RemoteViews
      */
-    private RemoteViews getCustomViews(Context context, NotifyRecorderItem item, boolean isRecording) {
+    private RemoteViews getCustomViews(Context context, NotifyRecorderItem item) {
         LOG.d(TAG, "getCustomViews");
         @SuppressLint("RemoteViewLayout") RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_player);
 
         // 录制状态刷新
-        updateRemoteView(context, remoteViews, item, isRecording);
+        updateRemoteView(context, remoteViews, item);
 
         // 录制
-        remoteViews.setOnClickPendingIntent(R.id.btn_recorder, getReceiverPendingIntent(context, MusicPlayAction.TYPE_RECORD, 1));
+        remoteViews.setOnClickPendingIntent(R.id.btn_recorder, getReceiverPendingIntent(context, NotifyAction.TYPE_RECORD, 1));
         // 保存
-        remoteViews.setOnClickPendingIntent(R.id.btn_save, getReceiverPendingIntent(context, MusicPlayAction.TYPE_SAVE, 1));
+        remoteViews.setOnClickPendingIntent(R.id.btn_save, getReceiverPendingIntent(context, NotifyAction.TYPE_SAVE, 2));
         // 打标
-        remoteViews.setOnClickPendingIntent(R.id.btn_add_tag, getReceiverPendingIntent(context, MusicPlayAction.TYPE_ADD_TAG, 2));
+        remoteViews.setOnClickPendingIntent(R.id.btn_add_tag, getReceiverPendingIntent(context, NotifyAction.TYPE_ADD_TAG, 3));
         // 软件
-        remoteViews.setOnClickPendingIntent(R.id.btn_app, getActivityPendingIntent(context, TYPE_APP, 3));
+        remoteViews.setOnClickPendingIntent(R.id.btn_app, getActivityPendingIntent(context, TYPE_APP, 4));
         // 退出
-        remoteViews.setOnClickPendingIntent(R.id.btn_exit, getActivityPendingIntent(context, MusicPlayAction.TYPE_EXIT, 4));
+        remoteViews.setOnClickPendingIntent(R.id.btn_exit, getActivityPendingIntent(context, NotifyAction.TYPE_EXIT, 5));
         // 点击根布局
-        remoteViews.setOnClickPendingIntent(R.id.ll_root, getActivityPendingIntent(context, TYPE_APP, 5));
+        remoteViews.setOnClickPendingIntent(R.id.ll_root, getActivityPendingIntent(context, TYPE_APP, 6));
         return remoteViews;
     }
 
-    private void updateRemoteView(Context context, RemoteViews remoteViews, NotifyRecorderItem music, boolean isRecording) {
-        if (isRecording) {
-            recorded = true;
+    private void updateRemoteView(Context context, RemoteViews remoteViews, NotifyRecorderItem item) {
+        if (item.getStatus() == EnRecordStatus.RECORDING) {
             remoteViews.setImageViewResource(R.id.iv_recorder, R.drawable.ic_notify_pause);
             remoteViews.setTextViewText(R.id.tv_recorder, context.getString(R.string.pause));
         } else {
-            if (recorded) {
+            if (item.getStatus() == EnRecordStatus.PAUSE) {
                 remoteViews.setImageViewResource(R.id.iv_recorder, R.drawable.ic_notify_resume);
                 remoteViews.setTextViewText(R.id.tv_recorder, context.getString(R.string.resume));
             } else {
@@ -214,7 +217,7 @@ public class NotificationUtils {
                 remoteViews.setTextViewText(R.id.tv_recorder, context.getString(R.string.notify_record));
             }
         }
-        remoteViews.setTextViewText(R.id.tv_time, FormatUtil.formatMs(music.getCurrentMs()));
+        remoteViews.setTextViewText(R.id.tv_time, FormatUtil.formatMs(item.getCurrentMs()));
     }
 
 
