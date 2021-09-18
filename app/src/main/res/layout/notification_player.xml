@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_root"
+    android:layout_width="match_parent"
+    android:layout_height="61dp"
+    android:background="@color/colorWhite"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_image"
+            android:layout_width="31dp"
+            android:layout_height="31dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_notify_logo" />
+
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="00:00:00"
+            android:textColor="#222222"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+
+    <!-- 录制 -->
+    <!-- 继续 -->
+    <!-- 暂停 -->
+    <LinearLayout
+        android:id="@+id/btn_recorder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_recorder"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:src="@drawable/ic_notify_recorder" />
+
+
+        <TextView
+            android:id="@+id/tv_recorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/notify_record"
+            android:textColor="#222222"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- 保存 -->
+    <LinearLayout
+        android:id="@+id/btn_save"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_save"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:src="@drawable/ic_notify_save" />
+
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/save"
+            android:textColor="#222222"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- 打标 -->
+    <LinearLayout
+        android:id="@+id/btn_add_tag"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_add_tag"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:src="@drawable/ic_notify_add_tag" />
+
+        <TextView
+            android:id="@+id/tv_add_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/add_tag"
+            android:textColor="#222222"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- 软件 -->
+    <LinearLayout
+        android:id="@+id/btn_app"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_app"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:src="@drawable/ic_notify_app" />
+
+        <TextView
+            android:id="@+id/tv_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/notify_soft"
+            android:textColor="#222222"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- 退出 -->
+    <LinearLayout
+        android:id="@+id/btn_exit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_exit"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:src="@drawable/ic_notify_exit" />
+
+        <TextView
+            android:id="@+id/tv_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/exit"
+            android:textColor="#222222"
+            android:textSize="10sp" />
+    </LinearLayout>
+</LinearLayout>
