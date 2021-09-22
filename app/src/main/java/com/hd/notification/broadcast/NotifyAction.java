@@ -1,4 +1,4 @@
-package com.hd.notification.ui;
+package com.hd.notification.broadcast;
 
 
 /**

@@ -20,6 +20,7 @@ import com.hd.notification.bean.EnRecordStatus;
 import com.hd.notification.bean.NotifyRecorderItem;
 import com.hd.notification.broadcast.NotificationStatusBarReceiver;
 import com.hd.notification.broadcast.NotificationUtils;
+import com.hd.notification.broadcast.NotifyAction;
 import com.hd.notification.util.LOG;
 
 
@@ -39,6 +40,7 @@ public class RecorderAndTranslatingActivity extends FragmentActivity {
 
     @NonNull
     private final NotifyRecorderItem mNotifyRecorderItem = new NotifyRecorderItem();
+    @NonNull
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private TextView tvSetPlayStatus;
@@ -57,9 +59,9 @@ public class RecorderAndTranslatingActivity extends FragmentActivity {
         setContentView(R.layout.activity_recorder_and_translating);
 
         startService();
+        bindService();
         findViewById(R.id.bind_service).setOnClickListener(v -> {
             notificationStatusBarReceiver.register(this);
-            bindService();
             NotificationUtils.get().setClazz(RecorderAndTranslatingActivity.class);
         });
 
@@ -150,6 +152,12 @@ public class RecorderAndTranslatingActivity extends FragmentActivity {
         if (mRecorderServiceConnection != null) {
             unbindService(mRecorderServiceConnection);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        NotificationUtils.get().cancelAll();
     }
 
     @Override

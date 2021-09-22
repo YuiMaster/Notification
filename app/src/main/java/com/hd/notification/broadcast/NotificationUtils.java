@@ -22,10 +22,9 @@ import com.hd.notification.ui.RecorderAndTranslatingActivity;
 import com.hd.notification.util.Constant;
 import com.hd.notification.util.FormatUtil;
 import com.hd.notification.util.LOG;
-import com.hd.notification.ui.NotifyAction;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
-import static com.hd.notification.ui.NotifyAction.TYPE_APP;
+import static com.hd.notification.broadcast.NotifyAction.TYPE_APP;
 
 
 public class NotificationUtils {
